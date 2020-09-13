@@ -68,6 +68,7 @@ def main(argv):
     get_records(domain, 'A', resolver)
     get_records(domain, 'AAAA', resolver)
     get_records(domain, 'CNAME', resolver)
+    get_records(domain, 'MX', resolver)
     get_records(domain, 'TXT', resolver)
     get_records(domain, 'NS', resolver)
 
