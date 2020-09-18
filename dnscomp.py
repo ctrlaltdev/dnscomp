@@ -39,14 +39,14 @@ def get_records (domain, type, resolver = None):
         records = dns.resolver.resolve(domain, type)
         for data in records:
             noresolv.append(data)
-    except dns.resolver.NoAnswer:
+    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN) as e:
         noresolv.append('-')
     
     try:
         records = resolver.resolve(domain, type)
         for data in records:
             resolv.append(data)
-    except dns.resolver.NoAnswer:
+    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN) as e:
         resolv.append('-')
 
     print('=====')
@@ -68,6 +68,7 @@ def printUsage(status = 0):
 
 def main(argv):
     domain = None
+    resolver_str = None
     resolver = None
 
     try:
@@ -81,10 +82,13 @@ def main(argv):
         elif opt in ('-d', '--domain'):
             domain = arg
         elif opt in ('-r', '--resolver'):
+            resolver_str = arg
             resolver = createResolver(arg)
 
-    if domain == None or resolver == None:
+    if domain == None or resolver_str == None:
         printUsage(2)
+
+    print('DOMAIN: {}\nRESOLVER: {}\n'.format(domain, resolver_str))
 
     get_records(domain, 'A', resolver)
     get_records(domain, 'AAAA', resolver)
